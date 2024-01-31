@@ -28,6 +28,13 @@
             {% endfor %}
             </p>
             <p>{{ article.created_at }}</p>
+            <p class="card-text my-2">Лайки: <span id="likes_count_{{ article.pk }}">{{ article.likes.count }}</span></p>
+                        {% if request.user.is_authenticated %}
+                            <a class="btn btn-danger d-block likes" href="{% url 'webapp:article_like' article.pk %}" data-span-count-id="count_likes_{{ article.pk }}">
+                                {% if request.user in article.likes.all %}анлайк
+                                {% else %}лайк
+                                {% endif %}</a>
+                        {% endif %}
         </div>
     </div>
     <h3 class="mt-2">Comments: </h3>
@@ -47,6 +54,13 @@
                         {% endif %}
                         {% if perms.webapp.delete_comment or comment.author == request.user %}
                             <a href="{% url 'webapp:comment_delete_view' pk=comment.pk %}" class="card-link">Удалить</a>
+                        {% endif %}
+                        <p class="card-text my-2">Лайки: <span id="likes_count_{{ comment.pk }}">{{ comment.likes.count }}</span></p>
+                        {% if request.user.is_authenticated %}
+                            <a class="btn btn-danger d-block likes" href="{% url 'webapp:article_comment' comment.pk %}" data-span-count-id="count_likes_{{ comment.pk }}">
+                                {% if request.user in comment.likes.all %}анлайк
+                                {% else %}лайк
+                                {% endif %}</a>
                         {% endif %}
                     </div>
                 </div>

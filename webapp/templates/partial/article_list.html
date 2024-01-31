@@ -23,6 +23,13 @@
                     {% if perms.webapp.delete_article or article.author == request.user %}
                         <a href="{% url 'webapp:article_delete_view' pk=article.pk %}" class="card-link">Удалить</a>
                     {% endif %}
+                    <p class="card-text my-2">Лайки: <span id="likes_count_{{ article.pk }}">{{ article.likes.count }}</span></p>
+                        {% if request.user.is_authenticated %}
+                            <a class="btn btn-danger d-block likes" href="{% url 'webapp:article_like' article.pk %}" data-span-count-id="likes_count_{{ article.pk }}">
+                                {% if request.user in article.likes.all %}анлайк
+                                {% else %}лайк
+                                {% endif %}</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>

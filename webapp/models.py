@@ -2,7 +2,6 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.core.validators import MinLengthValidator
 from django.urls import reverse
-from accounts.models import Profile
 
 
 class AbstractModel(models.Model):
@@ -19,7 +18,7 @@ class Article(AbstractModel):
     content = models.TextField(max_length=3000, null=False, blank=False, verbose_name='Контент')
     author = models.ForeignKey(get_user_model(), default=1, related_name='articles', on_delete=models.CASCADE, verbose_name="Автор")
     tags = models.ManyToManyField('webapp.Tag', blank=True, related_name='articles', verbose_name='Теги')
-    likes = models.ManyToManyField(Profile, blank=True, related_name='likes_article', verbose_name='Лайки', default=None)
+    likes = models.ManyToManyField(get_user_model(), related_name='loved_articles')
 
     def __str__(self):
         return f'{self.id}. {self.title}'
@@ -33,7 +32,7 @@ class Comment(AbstractModel):
                                 verbose_name='Статья')
     text = models.TextField(max_length=400, verbose_name='Комментарий')
     author = models.ForeignKey(get_user_model(), default=1, related_name='comments', on_delete=models.CASCADE, verbose_name="Автор")
-    likes = models.ManyToManyField(Profile, blank=True, related_name='likes_comment', verbose_name='Лайки', default=None)
+    likes = models.ManyToManyField(get_user_model(), related_name='loved_comments')
 
     def __str__(self):
         return self.text[:20]

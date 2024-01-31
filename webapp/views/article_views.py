@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
+from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.utils.http import urlencode
@@ -8,6 +9,15 @@ from webapp.models import Article
 from webapp.forms import ArticleForm, SimpleSearchForm
 from django.views.generic import View, FormView, ListView, DetailView, CreateView, UpdateView, DeleteView
 
+
+class LikeArticleUser(LoginRequiredMixin, View):
+    def get(self, request, pk, *args, **kwargs):
+        article = get_object_or_404(Article, pk=pk)
+        if request.user in article.likes.all():
+            article.likes.remove(request.user)
+        else:
+            article.likes.add(request.user)
+        return JsonResponse({'count': article.likes.count()}, safe=False)
 
 class IndexView(ListView):
     model = Article
